@@ -2,6 +2,7 @@
 using System;
 using System.Threading.Tasks;
 using TextToSpeech.Api.Application.Services;
+using TextToSpeech.Api.Models.Request;
 
 namespace TextToSpeech.Api.Controllers
 {
@@ -16,11 +17,34 @@ namespace TextToSpeech.Api.Controllers
                  throw new ArgumentNullException(nameof(iSpeechService));
         }
 
-        [HttpPost]
-        public async Task<ActionResult> PostAsync([FromBody] string text)
+        [HttpGet]
+        [Route("{id:guid}")]
+        public async Task<ActionResult> GetAsync(Guid id)
         {
-            await this.iSpeechService.CreateAndSaveAudioAsync(text);
-            return this.Ok();
+            var url = await this.iSpeechService.GetUrl(id);
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                return this.NotFound();
+            }
+            else
+            {
+                return this.Ok(url);
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> PostAsync(TextRequest request)
+        {
+            var url = await this.iSpeechService.CreateAndSaveAudioAsync(request.Content);
+            return this.Created(url, null);
+        }
+
+        [HttpPut]
+        [Route("{id:guid}")]
+        public async Task<ActionResult> PutAsync(Guid id, TextRequest request)
+        {
+            var url = await this.iSpeechService.UpdateAndSaveAudioAsync(id, request.Content);
+            return this.Ok(url);
         }
     }
 }

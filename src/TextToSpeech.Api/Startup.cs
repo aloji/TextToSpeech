@@ -34,10 +34,10 @@ namespace TextToSpeech.Api
                     c.BaseAddress = new Uri(Configuration.GetValue<string>("CognitiveUrl"));
                     c.DefaultRequestHeaders.Add("User-Agent", Configuration.GetValue<string>("User-Agent"));
                 });
-
-            services.AddSingleton<ICognitiveAuthService, CognitiveAuthService>();
-            services.AddSingleton<ISpeechService, SpeechService>();
             
+            services.AddTransient<ISpeechService, SpeechService>();
+            services.AddTransient<IContainerService, ContainerService>();
+
             services
                 .AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
