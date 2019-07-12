@@ -18,10 +18,7 @@ namespace TextToSpeech.Api.Application.Rest
 
         public async Task<Stream> GetAudioAsync(Speech speech, string token)
         {
-            if (speech == null)
-            {
-                throw new ArgumentNullException(nameof(speech));
-            }
+            Validate();
 
             var ssml = speech.SSML;
 
@@ -40,6 +37,14 @@ namespace TextToSpeech.Api.Application.Rest
                 .ConfigureAwait(false);
 
             return result;
+
+            void Validate()
+            {
+                if (speech == null)
+                    throw new ArgumentNullException(nameof(speech));
+                if(string.IsNullOrWhiteSpace(token))
+                    throw new ArgumentNullException(nameof(token));
+            }
         }
     }
 }
