@@ -10,33 +10,31 @@ namespace TextToSpeech.Api.Application.Services
         readonly CognitiveAuthRest iCognitiveAuthRest;
         readonly CognitiveRest iCognitiveRest;
         readonly IContainerService iContainerService;
+        readonly IAcronymsService iAcronymsService;
 
         public SpeechService(CognitiveAuthRest iCognitiveAuthRest,
             CognitiveRest iCognitiveRest,
-            IContainerService iContainerService)
+            IContainerService iContainerService,
+            IAcronymsService iAcronymsService)
         {
             this.iCognitiveAuthRest = iCognitiveAuthRest ??
                 throw new ArgumentNullException(nameof(iCognitiveAuthRest));
 
-            this.iContainerService = iContainerService ??
-                throw new ArgumentNullException(nameof(iContainerService));
-
             this.iCognitiveRest = iCognitiveRest ??
                 throw new ArgumentNullException(nameof(iCognitiveRest));
+
+            this.iContainerService = iContainerService ??
+               throw new ArgumentNullException(nameof(iContainerService));
+
+            this.iAcronymsService = iAcronymsService ??
+               throw new ArgumentNullException(nameof(iAcronymsService));
+
         }
 
         public async Task<string> CreateAndSaveAudioAsync(string text)
         {
-            Validate();
-
             var result = await this.UpdateAndSaveAudioAsync(Guid.NewGuid(), text);
             return result;
-
-            void Validate()
-            {
-                if (string.IsNullOrWhiteSpace(text))
-                    throw new ArgumentNullException(text);
-            }
         }
 
         public async Task<string> GetUrl(Guid id)
@@ -53,13 +51,17 @@ namespace TextToSpeech.Api.Application.Services
 
         public async Task<string> UpdateAndSaveAudioAsync(Guid id, string text)
         {
+            Validate();
+
             var result = default(string);
+            var textToSpeech = this.iAcronymsService.Replace(text);
+
             var speech = new Speech
             {
                 Gender = Gender.Female,
                 Locale = "en-US",
                 Name = "Microsoft Server Speech Text to Speech Voice (en-US, ZiraRUS)",
-                Text = text
+                Text = textToSpeech
             };
 
             var token = await this.iCognitiveAuthRest.GetTokenAsync();
@@ -72,6 +74,14 @@ namespace TextToSpeech.Api.Application.Services
             }
 
             return result;
+
+            void Validate()
+            {
+                if (string.IsNullOrWhiteSpace(text))
+                    throw new ArgumentNullException(nameof(text));
+                if (id == Guid.Empty)
+                    throw new ArgumentNullException(nameof(id));
+            }
         }
     }
 }

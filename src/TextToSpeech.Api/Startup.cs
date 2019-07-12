@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
+using System.Collections.Generic;
 using TextToSpeech.Api.Application.Options;
 using TextToSpeech.Api.Application.Rest;
 using TextToSpeech.Api.Application.Services;
@@ -28,9 +29,11 @@ namespace TextToSpeech.Api
         {
             services.AddHttpClient();
 
-
             services.Configure<StorageOptions>(
                 this.Configuration.GetSection("StorageOptions"));
+
+            services.Configure<List<AcronymsOptions>>(
+               this.Configuration.GetSection("AcronymsOptions"));
 
             services.AddHttpClient<CognitiveAuthRest>(
                 c => {
@@ -46,6 +49,7 @@ namespace TextToSpeech.Api
             
             services.AddTransient<ISpeechService, SpeechService>();
             services.AddTransient<IContainerService, ContainerService>();
+            services.AddTransient<IAcronymsService, AcronymsService>();
 
             services
                 .AddMvc()
