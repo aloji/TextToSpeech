@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Swashbuckle.AspNetCore.Swagger;
 using System;
 using TextToSpeech.Api.Application.Rest;
 using TextToSpeech.Api.Application.Services;
@@ -11,6 +12,9 @@ namespace TextToSpeech.Api
 {
     public class Startup
     {
+        const string SwaggerName = "TextToSpeech.Api";
+        const string SwaggerVersion = "v1";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -41,6 +45,17 @@ namespace TextToSpeech.Api
             services
                 .AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc(SwaggerVersion, new Info
+                {
+                    Title = SwaggerName,
+                    Version = SwaggerVersion
+                });
+            });
+
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,6 +69,20 @@ namespace TextToSpeech.Api
             {
                 app.UseHsts();
             }
+
+            app.UseCors(
+                builder =>
+                {
+                    builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                });
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint(
+                    $"/swagger/{SwaggerVersion}/swagger.json",
+                    $"{SwaggerName} {SwaggerVersion}");
+            });
 
             app.UseHttpsRedirection();
             app.UseMvc();

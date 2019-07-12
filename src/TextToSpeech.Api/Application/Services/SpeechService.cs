@@ -5,37 +5,38 @@ using TextToSpeech.Api.Domain.Entities;
 
 namespace TextToSpeech.Api.Application.Services
 {
-    public interface ISpeechService
-    {
-        Task<string> CreateAndSaveAudioAsync(string text);
-        Task<string> UpdateAndSaveAudioAsync(Guid id, string text);
-        Task<string> GetUrl(Guid id);
-    }
-
     public class SpeechService : ISpeechService
     {
-        readonly CognitiveAuthRest cognitiveAuthRest;
-        readonly CognitiveRest cognitiveRest;
+        readonly CognitiveAuthRest iCognitiveAuthRest;
+        readonly CognitiveRest iCognitiveRest;
         readonly IContainerService iContainerService;
 
-        public SpeechService(CognitiveAuthRest cognitiveAuthRest,
-            IContainerService iContainerService,
-            CognitiveRest cognitiveRest)
+        public SpeechService(CognitiveAuthRest iCognitiveAuthRest,
+            CognitiveRest iCognitiveRest,
+            IContainerService iContainerService)
         {
-            this.cognitiveAuthRest = cognitiveAuthRest ??
-                throw new ArgumentNullException(nameof(cognitiveAuthRest));
+            this.iCognitiveAuthRest = iCognitiveAuthRest ??
+                throw new ArgumentNullException(nameof(iCognitiveAuthRest));
 
             this.iContainerService = iContainerService ??
                 throw new ArgumentNullException(nameof(iContainerService));
 
-            this.cognitiveRest = cognitiveRest ??
-                throw new ArgumentNullException(nameof(cognitiveRest));
+            this.iCognitiveRest = iCognitiveRest ??
+                throw new ArgumentNullException(nameof(iCognitiveRest));
         }
 
         public async Task<string> CreateAndSaveAudioAsync(string text)
         {
+            Validate();
+
             var result = await this.UpdateAndSaveAudioAsync(Guid.NewGuid(), text);
             return result;
+
+            void Validate()
+            {
+                if (string.IsNullOrWhiteSpace(text))
+                    throw new ArgumentNullException(text);
+            }
         }
 
         public async Task<string> GetUrl(Guid id)
@@ -61,9 +62,9 @@ namespace TextToSpeech.Api.Application.Services
                 Text = text
             };
 
-            var token = await this.cognitiveAuthRest.GetTokenAsync();
+            var token = await this.iCognitiveAuthRest.GetTokenAsync();
 
-            using (var stream = await this.cognitiveRest.GetAudioAsync(speech, token))
+            using (var stream = await this.iCognitiveRest.GetAudioAsync(speech, token))
             {
                 var fileName = $"{id}.wav";
                 var uri = await this.iContainerService.UploadFromStreamAsync(fileName, stream);
