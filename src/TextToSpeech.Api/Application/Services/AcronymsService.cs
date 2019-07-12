@@ -23,7 +23,7 @@ namespace TextToSpeech.Api.Application.Services
             {
                 foreach (var acronym in acronyms)
                 {
-                    result = result.Replace(acronym.Key, acronym.Value, StringComparison.InvariantCultureIgnoreCase);
+                    result = result.Replace(acronym.Key, acronym.Value);
                 }
             }
             return result;
