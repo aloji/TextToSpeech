@@ -1,20 +1,22 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using TextToSpeech.Api.Application.Options;
 
 namespace TextToSpeech.Api.Application.Services
 {
 
     public class ContainerService : IContainerService
     {
-        readonly IConfiguration iConfiguration;
-        public ContainerService(IConfiguration iConfiguration)
+        readonly IOptionsMonitor<StorageOptions> options;
+        public ContainerService(IOptionsMonitor<StorageOptions> options)
         {
-            this.iConfiguration = iConfiguration
-                ?? throw new ArgumentNullException(nameof(iConfiguration));
+            this.options = options
+                ?? throw new ArgumentNullException(nameof(options));
         }
 
         public async Task<Uri> GetUrlAsync(string fileName)
@@ -42,8 +44,8 @@ namespace TextToSpeech.Api.Application.Services
 
         private async Task<CloudBlobContainer> GetContainer()
         {
-            var connectionString = iConfiguration.GetValue<string>("StorageConnectionString");
-            var containerName = iConfiguration.GetValue<string>("StorageContainerName");
+            var connectionString = options.CurrentValue.ConnectionString;
+            var containerName = options.CurrentValue.ContainerName;
 
             var storageAccount = CloudStorageAccount.Parse(connectionString);
             var myClient = storageAccount.CreateCloudBlobClient();
