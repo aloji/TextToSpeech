@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using TextToSpeech.Api.Domain.Entities;
-
-namespace TextToSpeech.Api.Application.Options
+﻿namespace TextToSpeech.Api.Application.Options
 {
     public class AcronymsOptions
     {

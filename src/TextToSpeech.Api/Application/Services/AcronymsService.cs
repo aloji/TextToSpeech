@@ -6,7 +6,7 @@ using TextToSpeech.Api.Application.Options;
 
 namespace TextToSpeech.Api.Application.Services
 {
-    public class AcronymsService : IAcronymsService
+    public class AcronymsService : IReplaceService
     {
         readonly IOptionsMonitor<List<AcronymsOptions>> options;
         public AcronymsService(IOptionsMonitor<List<AcronymsOptions>> options)
@@ -21,9 +21,9 @@ namespace TextToSpeech.Api.Application.Services
             var acronyms = this.options.CurrentValue;
             if (!string.IsNullOrWhiteSpace(text) && acronyms != null && acronyms.Any())
             {
-                foreach (var acronym in acronyms)
+                foreach (var option in acronyms)
                 {
-                    result = result.Replace(acronym.Key, acronym.Value);
+                    result = result.Replace(option.Key, option.Value);
                 }
             }
             return result;

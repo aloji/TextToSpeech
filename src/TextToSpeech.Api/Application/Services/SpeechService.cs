@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using TextToSpeech.Api.Application.Rest;
 using TextToSpeech.Api.Domain.Entities;
@@ -10,12 +11,12 @@ namespace TextToSpeech.Api.Application.Services
         readonly CognitiveAuthRest iCognitiveAuthRest;
         readonly CognitiveRest iCognitiveRest;
         readonly IContainerService iContainerService;
-        readonly IAcronymsService iAcronymsService;
+        readonly IEnumerable<IReplaceService> iReplaceServices;
 
         public SpeechService(CognitiveAuthRest iCognitiveAuthRest,
             CognitiveRest iCognitiveRest,
             IContainerService iContainerService,
-            IAcronymsService iAcronymsService)
+            IEnumerable<IReplaceService> iReplaceServices)
         {
             this.iCognitiveAuthRest = iCognitiveAuthRest ??
                 throw new ArgumentNullException(nameof(iCognitiveAuthRest));
@@ -26,9 +27,8 @@ namespace TextToSpeech.Api.Application.Services
             this.iContainerService = iContainerService ??
                throw new ArgumentNullException(nameof(iContainerService));
 
-            this.iAcronymsService = iAcronymsService ??
-               throw new ArgumentNullException(nameof(iAcronymsService));
-
+            this.iReplaceServices = iReplaceServices ??
+               throw new ArgumentNullException(nameof(iReplaceServices));
         }
 
         public async Task<string> CreateAndSaveAudioAsync(string text)
@@ -54,7 +54,8 @@ namespace TextToSpeech.Api.Application.Services
             Validate();
 
             var result = default(string);
-            var textToSpeech = this.iAcronymsService.Replace(text);
+
+            var textToSpeech = this.Replace(text);
 
             var speech = new Speech
             {
@@ -82,6 +83,16 @@ namespace TextToSpeech.Api.Application.Services
                 if (id == Guid.Empty)
                     throw new ArgumentNullException(nameof(id));
             }
+        }
+
+        private string Replace(string text)
+        {
+            var result = text;
+            foreach (var item in this.iReplaceServices)
+            {
+                result = item.Replace(result);
+            }
+            return result;
         }
     }
 }

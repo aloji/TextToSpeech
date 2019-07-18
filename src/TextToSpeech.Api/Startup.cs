@@ -35,6 +35,9 @@ namespace TextToSpeech.Api
             services.Configure<List<AcronymsOptions>>(
                this.Configuration.GetSection("AcronymsOptions"));
 
+            services.Configure<List<RegexOptions>>(
+              this.Configuration.GetSection("RegexOptions"));
+
             services.AddHttpClient<CognitiveAuthRest>(
                 c => {
                     c.BaseAddress = new Uri(Configuration.GetValue<string>("CognitiveTokenUrl"));
@@ -49,7 +52,8 @@ namespace TextToSpeech.Api
             
             services.AddTransient<ISpeechService, SpeechService>();
             services.AddTransient<IContainerService, ContainerService>();
-            services.AddTransient<IAcronymsService, AcronymsService>();
+            services.AddTransient<IReplaceService, AcronymsService>();
+            services.AddTransient<IReplaceService, RegexService>();
 
             services
                 .AddMvc()
