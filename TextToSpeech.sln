@@ -1,11 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2046
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AB94B17C-13F9-4215-AE5E-F584D9C74979}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextToSpeech.Api", "src\TextToSpeech.Api\TextToSpeech.Api.csproj", "{8779376F-241A-446F-9E58-C69CD1578738}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{1A35D066-2353-44F5-BEE9-49F3C4EE070D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextToSpeech.UnitTest", "test\TextToSpeech.UnitTest\TextToSpeech.UnitTest.csproj", "{A9084EC2-74BA-4BF1-B454-CF1670BC46F6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,12 +21,17 @@ Global
 		{8779376F-241A-446F-9E58-C69CD1578738}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8779376F-241A-446F-9E58-C69CD1578738}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8779376F-241A-446F-9E58-C69CD1578738}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9084EC2-74BA-4BF1-B454-CF1670BC46F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9084EC2-74BA-4BF1-B454-CF1670BC46F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9084EC2-74BA-4BF1-B454-CF1670BC46F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9084EC2-74BA-4BF1-B454-CF1670BC46F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8779376F-241A-446F-9E58-C69CD1578738} = {AB94B17C-13F9-4215-AE5E-F584D9C74979}
+		{A9084EC2-74BA-4BF1-B454-CF1670BC46F6} = {1A35D066-2353-44F5-BEE9-49F3C4EE070D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {37841A74-FBE7-4D3A-ADF3-A66A0C100883}
